@@ -1,8 +1,8 @@
 import LandingPagesNav from "@/components/base/nav/InitialNav";
-import Embarcar from "./_components/Embarcar";
 import { headers } from "next/headers";
 import { auth } from "@/auth";
 import CarouselExample from "./_components/CarouselExample";
+import CriarPiu from "./_components/CriarPiu";
 
 export default async function Home() {
   const session = await auth.api.getSession({
@@ -12,20 +12,35 @@ export default async function Home() {
   const isLogged = !!session?.user;
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gray-50">
       <LandingPagesNav isLogged={isLogged} />
       
-      <main className="h-[70vh] w-full pt-20 pb-16 flex flex-col items-center justify-center text-center">
-        <h1 className="font-bold text-5xl text-pink-800">Página de Exemplo</h1>
-        <p className="pt-4 text-xl">Comece a editar seu site em <em className="text-pink-400">/app/(frontend)/(landing-pages)/page.tsx</em></p>
+      <main className="max-w-2xl mx-auto pt-24 px-4 pb-20">
+        <header className="mb-8 text-center text-blue-600">
+          <h1 className="font-bold text-4xl">PiuPiwer</h1>
+        </header>
+
+        <section className="mb-8">
+          <CarouselExample />
+        </section>
+
+        {isLogged ? (
+          <CriarPiu />
+        ) : (
+          <div className="bg-blue-100 border border-blue-200 p-6 rounded-xl text-center mb-8">
+            <p className="text-blue-800 font-medium">
+              Faça login para começar a piar!
+            </p>
+          </div>
+        )}
+
+        <section className="flex flex-col gap-4">
+          <h2 className="font-bold text-gray-500 text-sm uppercase px-2">Pius recentes</h2>
+          <div className="bg-white p-12 rounded-2xl border border-dashed border-gray-300 text-center text-gray-400 italic">
+            Ninguém piou nada ainda... seja o primeiro!
+          </div>
+        </section>
       </main>
-
-      <div className="w-full flex items-center justify-center">
-        <Embarcar isLogged={isLogged} />
-      </div>
-
-      <p className="text-center pt-8">um carousel de exemplo :)</p>
-      <CarouselExample />
     </div>
   );
 }

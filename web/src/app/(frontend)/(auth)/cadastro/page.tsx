@@ -1,16 +1,20 @@
-import NavbarLogo from "@/components/base/nav/NavbarLogo";
-import CadastroForm from "./_components/CadastroForm";
+import CadastroForm from './_components/CadastroForm';
 
-function Cadastro() {
+function CadastroPage() {
   return ( 
-    <>
-      <nav className="w-full py-6 px-8 text-pink-500">
-        <NavbarLogo />
-      </nav>
-      
-      <CadastroForm />
-    </>
+    <main className="lg:h-screen flex">
+      <div className="w-full lg:w-[55%] h-full flex flex-col gap-8 items-center justify-center p-8">
+        <CadastroForm />
+      </div>
+
+      <div className="bg-blue-600 h-full hidden lg:flex w-[45%] flex-col items-center justify-center py-32">
+        <div className="text-white flex flex-col items-center gap-4">
+          <h1 className='font-bold text-[64px]'>PiuPiwer</h1>
+          <p className='text-xl'>Crie sua conta e comece a piar!</p>
+        </div>
+      </div>
+    </main>
    );
 }
 
-export default Cadastro;
+export default CadastroPage;

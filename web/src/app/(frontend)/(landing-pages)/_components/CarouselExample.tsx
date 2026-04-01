@@ -6,46 +6,61 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 
-const items = [
+const news = [
   {
-    title: "Slide 1",
-    description: "This is the first slide of the carousel.",
+    title: "soso careca largou a faculdade?",
+    description: "A maior notícia do momento, sera que ela vai largar tudo e morar com o paiva?",
+    image: "/noticias/soso.jpeg",
   },
   {
-    title: "Slide 2",
-    description: "Here's the second one, nice and clean.",
+    title: "Dicas de culinária",
+    description: "venha conferir a melhor receita de pipoca de microondas do mundo!",
+    image: "/noticias/pipoca.jpeg",
   },
   {
-    title: "Slide 3",
-    description: "uooooooooooooooooooun",
-  },
-  {
-    title: "Slide 4",
-    description: "Last slide - ready to impress!",
-  },
+    title: "meninas boudadas arrasando!",
+    description: "nova equipe de hunters reclama de abusos piscologicos da LO manu",
+    image: "/noticias/manu.jpeg",
+  }
 ]
 
 export default function CarouselExample() {
   return (
-    <div className="w-full max-w-4xl mx-auto mt-6 py-10 px-4 bg-pink-100">
-      <Carousel className="relative">
+    <div className="w-full max-w-5xl mx-auto mt-4 py-6 px-4">
+      <Carousel 
+        opts={{
+          align: "start",
+          loop: true,
+        }}
+        className="relative group"
+      >
         <CarouselContent className="-ml-4">
-          {items.map((item, index) => (
+          {news.map((item, index) => (
             <CarouselItem
               key={index}
-              className="pl-4 basis-full sm:basis-1/2 md:basis-1/3 snap-center"
+              className="pl-4 basis-full md:basis-1/2 lg:basis-1/3"
             >
-              <div className="bg-white p-6 rounded-xl shadow-md h-full flex flex-col justify-center">
-                <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
-                <p className="text-sm text-muted-foreground">
-                  {item.description}
-                </p>
+              <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-md transition-shadow h-full flex flex-col">
+                <div className="h-48 w-full overflow-hidden bg-gray-100">
+                  <img 
+                    src={item.image} 
+                    alt={item.title} 
+                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                  />
+                </div>
+                <div className="p-5 flex flex-col flex-grow">
+                  <h3 className="text-lg font-bold text-blue-600 mb-2">{item.title}</h3>
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="left-2 bg-white/80 hover:bg-white text-black dark:bg-zinc-800 dark:text-white shadow" />
-        <CarouselNext className="right-2 bg-white/80 hover:bg-white text-black dark:bg-zinc-800 dark:text-white shadow" />
+        
+        <CarouselPrevious className="hidden group-hover:flex -left-4 bg-white text-blue-600 border-gray-200 shadow-lg" />
+        <CarouselNext className="hidden group-hover:flex -right-4 bg-white text-blue-600 border-gray-200 shadow-lg" />
       </Carousel>
     </div>
   )
