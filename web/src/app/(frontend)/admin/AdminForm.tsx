@@ -1,7 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react';
-
-import CredentialsLoginForm from '@/components/form/CredentialsLoginForm';
+import CredentialsLoginForm from '@/components/base/form/CredentialsLoginForm';
 
 function AdminForm() {
   const [loading, setLoading] = useState(true);
@@ -18,9 +17,12 @@ function AdminForm() {
       <div className="w-[360px]">
         <CredentialsLoginForm
           callbackUrl="/admin/dashboard"
-          loading={loading} setLoading={setLoading}  
-          email={email} setEmail={setEmail} 
-          password={password} setPassword={setPassword} 
+          loading={loading} 
+          setLoading={setLoading}  
+          email={email} 
+          setEmail={setEmail} 
+          password={password} 
+          setPassword={setPassword} 
         />
       </div>
     </>
