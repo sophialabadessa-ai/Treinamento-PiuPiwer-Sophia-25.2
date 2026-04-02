@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { createPiuAction } from "../_actions/piu";
 
 export default function CriarPiu() {
   const [texto, setTexto] = useState("");
@@ -13,18 +14,21 @@ export default function CriarPiu() {
       return;
     }
 
-    if (texto.length > 140) {
-      toast.error("O limite é de 140 caracteres!");
-      return;
-    }
-
     setLoading(true);
     
-    setTimeout(() => {
+    try {
+      const formData = new FormData();
+      formData.append("piu-text", texto);
+
+      await createPiuAction(formData);
+
       toast.success("Piu publicado com sucesso!");
       setTexto("");
+    } catch (error) {
+      toast.error("Erro ao publicar o Piu.");
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   return (

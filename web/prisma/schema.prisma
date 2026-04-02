@@ -14,7 +14,38 @@ enum Role {
   SUPER_ADMIN
 }
 
-// modelos de exemplo abaixo (pode deletar)
+// Modelos do PiuPiwer
+model Piu {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  text      String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@map("piu")
+}
+
+model User {
+  // nao mexer entre aqui >
+  id            String    @id @map("_id") 
+  name          String
+  email         String    @unique
+  emailVerified Boolean?
+  image         String?
+  createdAt     DateTime
+  updatedAt     DateTime
+  sessions      Session[]
+  accounts      Account[]
+  role          Role      @default(USER)
+  // < e aqui
+
+  // Relacionamento com os Pius
+  pius          Piu[]
+
+  @@map("user")
+}
+
+// Modelos de exemplo (opcionais, mantidos do seu original)
 model Curso {
   id        String @id @default(auto()) @map("_id") @db.ObjectId
   name      String
@@ -27,8 +58,8 @@ model Curso {
 model CursoMateriaRelacionada {
   id        String @id @default(auto()) @map("_id") @db.ObjectId
 
-  curso   Curso  @relation(fields: [cursoId], references: [id])
-  cursoId String
+  curso     Curso  @relation(fields: [cursoId], references: [id])
+  cursoId   String
 
   materia   Materia @relation(fields: [materiaId], references: [id])
   materiaId String
@@ -46,38 +77,13 @@ model Materia {
 }
 
 model Licao {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId // id base do mongodb, + perfomance
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId 
   name      String
   descricao String
   archived  Boolean? @default(false)
 }
-// modelos de exemplo acima (pode deletar)
 
-model User {
-  // nao mexer entre aqui >
-  id            String    @id @map("_id") // o id do user deve ser assim por causa do better auth
-  name          String
-  email         String    @unique
-  emailVerified Boolean?
-  image         String?
-  createdAt     DateTime
-  updatedAt     DateTime
-  sessions      Session[]
-  accounts      Account[]
-  role          Role      @default(USER)
-  // < e aqui
-
-
-
-  @@map("user")
-}
-
-
-
-
-
-// evitar mexer daqui pra baixo
-// nesses 3 modelos do better auth
+// Configurações do Better Auth (evitar mexer)
 model Session {
   id        String   @id @map("_id")
   expiresAt DateTime
