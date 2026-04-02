@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { blockForbiddenRequests, returnInvalidDataErrors, validBody, zodErrorHandler } from "@/utils/api";
+import { blockForbiddenRequests } from "@/utils/api/blockRequest";
+import { returnInvalidDataErrors, zodErrorHandler } from "@/utils/api/errorHandlers";
+import { validBody } from "@/utils/api/validBody";
+
 import { AllowedRoutes } from "@/types";
 import { idSchema, updatePasswordSchema } from "@/backend/schemas";
 import { auth } from "@/auth";
