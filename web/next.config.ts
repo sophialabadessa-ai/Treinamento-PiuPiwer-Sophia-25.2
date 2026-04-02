@@ -1,6 +1,9 @@
 import { type NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+  // Isso aqui é o que resolve o erro do Prisma no Next 15
+  serverExternalPackages: ['@prisma/client'],
+  
   turbopack: {
     rules: {
       '*.svg': {
