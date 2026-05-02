@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { useRouter, useSegments } from 'expo-router'
 import { authClient } from '../lib/auth-client'
+import { Alert } from 'react-native'
 
 interface User {
   id: string
   email: string
   name: string
-  // Add other user properties as needed
 }
 
 interface AuthContextType {
@@ -30,37 +30,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const isAuthenticated = !!user
 
-  // Check session on app start
   useEffect(() => {
     checkSession()
   }, [])
 
-  // Handle navigation based on auth state
   useEffect(() => {
     if (isLoading) return
-
     const inAuthGroup = segments[0] === '(auth)'
 
     if (!isAuthenticated && !inAuthGroup) {
-      // User not authenticated, redirect to login
-      router.replace('/(auth)/login')
+      router.replace('/login')
     } else if (isAuthenticated && inAuthGroup) {
-      // User authenticated, redirect to main app
-      router.replace('/')
+      router.replace('/home')
     }
   }, [isAuthenticated, segments, isLoading, router])
 
   const checkSession = async () => {
     try {
       const result = await authClient.getSession()
-      
       if (result?.data?.user) {
-        setUser(result.data.user)
+        setUser(result.data.user as User)
       } else {
         setUser(null)
       }
     } catch (error) {
-      console.error('Error checking session:', error)
       setUser(null)
     } finally {
       setIsLoading(false)
@@ -73,51 +66,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     try {
-      const result = await authClient.signIn.email({
-        email,
-        password,
-      })
-      console.log(result)
-      
+      const result = await authClient.signIn.email({ email, password })
       if (result.error) {
+        Alert.alert('Erro', result.error.message)
         return { success: false, error: result.error.message }
       }
-      
       if (result.data?.user) {
-        setUser(result.data.user)
+        setUser(result.data.user as User)
         return { success: true }
       }
-      
-      return { success: false, error: 'Login failed' }
+      return { success: false, error: 'Falha no login' }
     } catch (error) {
-      console.error('Login error:', error)
-      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred'
-      return { success: false, error: errorMessage }
+      Alert.alert('Conexão', 'Erro ao conectar com o servidor.')
+      return { success: false, error: 'Erro de conexão' }
     }
   }
 
   const signUp = async (email: string, password: string, name: string) => {
     try {
-      const result = await authClient.signUp.email({
-        email,
-        password,
-        name,
-      })
-      
+      const result = await authClient.signUp.email({ email, password, name })
       if (result.error) {
+        Alert.alert('Erro', result.error.message)
         return { success: false, error: result.error.message }
       }
-      
       if (result.data?.user) {
-        setUser(result.data.user)
+        setUser(result.data.user as User)
         return { success: true }
       }
-      
-      return { success: false, error: 'Sign up failed' }
+      return { success: false, error: 'Falha no cadastro' }
     } catch (error) {
-      console.error('Sign up error:', error)
-      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred'
-      return { success: false, error: errorMessage }
+      Alert.alert('Conexão', 'Erro ao conectar com o servidor.')
+      return { success: false, error: 'Erro de conexão' }
     }
   }
 
@@ -127,18 +106,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         provider: "google",
         callbackURL: `${process.env.EXPO_PUBLIC_SCHEMA}://auth/callback`
       })
-      
-      if (result.error) {
-        return { success: false, error: result.error.message }
-      }
-      
-      // For social login, we might need to check session after redirect
+      if (result.error) return { success: false, error: result.error.message }
       await checkSession()
       return { success: true }
     } catch (error) {
-      console.error('Google login error:', error)
-      const errorMessage = error instanceof Error ? error.message : 'Google login failed'
-      return { success: false, error: errorMessage }
+      return { success: false, error: 'Google login failed' }
     }
   }
 
@@ -147,22 +119,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await authClient.signOut()
       setUser(null)
     } catch (error) {
-      console.error('Sign out error:', error)
-      // Even if the API call fails, clear the local user state
       setUser(null)
     }
   }
 
   return (
     <AuthContext.Provider value={{
-      user,
-      isLoading,
-      isAuthenticated,
-      signIn,
-      signUp,
-      signOut,
-      signInWithGoogle,
-      refreshSession,
+      user, isLoading, isAuthenticated, signIn, signUp, signOut, signInWithGoogle, refreshSession,
     }}>
       {children}
     </AuthContext.Provider>
@@ -171,8 +134,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 export const useAuth = () => {
   const context = useContext(AuthContext)
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
-  }
+  if (context === undefined) throw new Error('useAuth must be used within an AuthProvider')
   return context
 }

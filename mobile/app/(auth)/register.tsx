@@ -3,23 +3,25 @@ import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator } fro
 import { Link } from 'expo-router';
 import { useAuth } from '~/contexts/AuthContext';
 
-export default function LoginScreen() {
-  const { signIn } = useAuth();
+export default function RegisterScreen() {
+  const { signUp } = useAuth();
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = async () => {
-    if (!email || !password) {
+  const handleRegister = async () => {
+    if (!name || !email || !password) {
       Alert.alert('Erro', 'Preencha todos os campos');
       return;
     }
 
     setIsLoading(true);
-    const result = await signIn(email, password);
+    
+    const result = await signUp(email, password, name);
     
     if (!result.success) {
-      Alert.alert('Erro no Login', result.error || 'Verifique suas credenciais');
+      Alert.alert('Erro no Cadastro', result.error || 'Tente novamente');
     }
     
     setIsLoading(false);
@@ -27,9 +29,17 @@ export default function LoginScreen() {
 
   return (
     <View className="flex-1 justify-center items-center px-6 bg-white">
-      <Text className="text-5xl font-extrabold text-blue-500 mb-10">PiuPiwer</Text>
+      <Text className="text-4xl font-extrabold text-blue-500 mb-8">Criar Conta</Text>
       
       <View className="w-full gap-y-4">
+        <TextInput 
+          className="w-full bg-gray-100 p-4 rounded-xl border border-gray-200 text-base"
+          placeholder="Nome completo"
+          value={name}
+          onChangeText={setName}
+          autoCapitalize="words"
+        />
+
         <TextInput 
           className="w-full bg-gray-100 p-4 rounded-xl border border-gray-200 text-base"
           placeholder="Email"
@@ -49,22 +59,20 @@ export default function LoginScreen() {
         
         <TouchableOpacity 
           className="w-full bg-blue-500 p-4 rounded-xl items-center mt-2"
-          onPress={handleLogin}
+          onPress={handleRegister}
           disabled={isLoading}
         >
           {isLoading ? (
             <ActivityIndicator color="white" />
           ) : (
-            <Text className="text-white font-bold text-lg">Entrar</Text>
+            <Text className="text-white font-bold text-lg">Cadastrar</Text>
           )}
         </TouchableOpacity>
       </View>
 
       <View className="mt-6 flex-row">
-        <Text className="text-gray-600 text-base">Ainda não tem conta? </Text>
-        <Link href="/register" className="text-blue-500 font-bold text-base">
-          Cadastre-se
-        </Link>
+        <Text className="text-gray-600 text-base">Já tem uma conta? </Text>
+        <Link href="/login" className="text-blue-500 font-bold text-base">Faça Login</Link>
       </View>
     </View>
   );
